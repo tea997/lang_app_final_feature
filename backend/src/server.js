@@ -19,8 +19,10 @@ const __dirname = path.resolve();
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow localhost, local network IP addresses, and FRONTEND_URL
-      const allowedOrigins = [process.env.FRONTEND_URL].filter(Boolean);
+      // Normalize FRONTEND_URL by removing trailing slash if present
+      const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, "") : null;
+      const allowedOrigins = [frontendUrl].filter(Boolean);
+      
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
@@ -28,6 +30,7 @@ app.use(
       ) {
         callback(null, true);
       } else {
+        console.warn(`CORS blocked for origin: ${origin}. Configured FRONTEND_URL: ${process.env.FRONTEND_URL}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
