@@ -1,16 +1,19 @@
-import { axiosInstance } from "./axios";
+import { axiosInstance, saveToken, clearToken } from "./axios";
 
 export const signup = async (signupData) => {
   const response = await axiosInstance.post("/auth/signup", signupData);
+  saveToken(response.data.token);
   return response.data;
 };
 
 export const login = async (loginData) => {
   const response = await axiosInstance.post("/auth/login", loginData);
+  saveToken(response.data.token);
   return response.data;
 };
 export const logout = async () => {
   const response = await axiosInstance.post("/auth/logout");
+  clearToken();
   return response.data;
 };
 
